@@ -1,0 +1,19 @@
+# Unrelated academic/temporary folders
+Assignment12_Heap/
+agmarknet_downloads/
+
+# Python & Environment
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.venv/
+env/
+venv/
+ENV/
+
+# OS and Editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

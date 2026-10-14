@@ -1,0 +1,78 @@
+================================================================================
+AGRIMARKET STEP 10 ADVANCED SQL SUITE - SYSTEM VERIFICATION AUDIT
+Execution Timestamp : 2026-10-10 18:38:56
+Target Database     : AgriMarket on localhost:3306
+Test Environment    : MySQL Community Server Ver 26.7.0
+================================================================================
+
+[1] NEW SUPPORTING TABLES & SEED DATA AUDIT
+--------------------------------------------------------------------------------
+  * Table `District_Logistics`: 26 highway route records verified (13 districts x 2 hubs).
+    - Route: Ahilyanagar               -> Pune (Market Yard Hub)    | Distance: 125.00 km | Freight: Rs. 2.40/km/Qtl
+    - Route: Ahilyanagar               -> Mumbai (Vashi Hub)        | Distance: 245.00 km | Freight: Rs. 2.60/km/Qtl
+    - Route: Amarawati                 -> Pune (Market Yard Hub)    | Distance: 565.00 km | Freight: Rs. 2.20/km/Qtl
+    - Route: Amarawati                 -> Mumbai (Vashi Hub)        | Distance: 650.00 km | Freight: Rs. 2.30/km/Qtl
+    - Route: Chattrapati Sambhajinagar -> Pune (Market Yard Hub)    | Distance: 235.00 km | Freight: Rs. 2.45/km/Qtl
+    - Route: Chattrapati Sambhajinagar -> Mumbai (Vashi Hub)        | Distance: 330.00 km | Freight: Rs. 2.55/km/Qtl
+  * Table `Buyer_Procurement_Orders`: 0 records verified.
+
+[2] DATABASE VIEWS EXECUTION AUDIT
+--------------------------------------------------------------------------------
+  * View 1: `vw_mandi_complete_feed` -> Total Rows: 40,307
+    - Feed Sample: 2026-10-08 | APMC Ahilyanagar (Ahilyanagar) | Apple [Other] | Modal: Rs. 8500.00 | Spread: 42.86%
+    - Feed Sample: 2026-10-06 | APMC Ahilyanagar (Ahilyanagar) | Apple [Other] | Modal: Rs. 8500.00 | Spread: 42.86%
+    - Feed Sample: 2026-10-04 | APMC Ahilyanagar (Ahilyanagar) | Apple [Other] | Modal: Rs. 8500.00 | Spread: 42.86%
+  * View 2: `vw_district_crop_summary` -> Regional Commodity Groups: 83
+    - District: Nashik                    | Vegetables/Onion      | Records: 4547 | Arrivals: 3331494.07 T | Avg Modal: Rs. 1814.45 | Peak: Rs. 13510.00
+    - District: Ahilyanagar               | Vegetables/Onion      | Records: 2399 | Arrivals: 1593142.23 T | Avg Modal: Rs. 1595.92 | Peak: Rs. 6200.00
+    - District: Solapur                   | Vegetables/Onion      | Records:  910 | Arrivals:  741314.80 T | Avg Modal: Rs. 1566.20 | Peak: Rs. 8500.00
+  * View 3: `vw_buyer_mandi_risk_index` -> Qualified Markets (>= 10 trading days): 225
+    - Risk Profile: APMC Ahilyanagar (Ahilyanagar) | Crop: Mango    | Days:  45 | Avg: Rs. 6838.89 | Volatility: 166.67% | Risk: HIGH VOLATILITY (RISKY)
+    - Risk Profile: APMC Kalyan (Thane) | Crop: Mango    | Days:  38 | Avg: Rs. 6342.11 | Volatility: 93.76% | Risk: HIGH VOLATILITY (RISKY)
+    - Risk Profile: APMC Nasik (Nashik) | Crop: Mango    | Days:  87 | Avg: Rs. 10710.34 | Volatility: 83.29% | Risk: HIGH VOLATILITY (RISKY)
+    - Risk Profile: APMC Kalyan (Thane) | Crop: Tomato   | Days:  91 | Avg: Rs. 1323.90 | Volatility: 71.27% | Risk: HIGH VOLATILITY (RISKY)
+
+[3] STORED FUNCTIONS COMPUTATION AUDIT
+--------------------------------------------------------------------------------
+  * fn_price_spread_pct(Min=1500.00, Max=2100.00)                 -> 40.00%
+  * fn_inflow_status(1250T, 350T, 45T)                            -> 'Heavy Glut (>=1000T)', 'Moderate Supply (100-999T)', 'Low Supply (<100T)'
+  * fn_calculate_landed_cost(Modal=2500, Dist=210km, Rate=2.40, Cess=1.05%) -> Rs. 3030.25/Qtl
+  * fn_quality_discount_ratio(Variety=2800 vs Bench=2500)         -> 12.00% premium
+  * fn_quality_discount_ratio(Variety=2100 vs Bench=2500)         -> -16.00% discount
+
+[4] STORED PROCEDURES EXECUTION AUDIT
+--------------------------------------------------------------------------------
+  * Procedure 1: CALL sp_find_best_mandis('Onion', '2026-01-01', '2026-10-10', 3)
+    - Mandi: Pratap Nana Mahale Khajgi Krushi Uttpana Bazar, Samati-Dhule (Dhule) | Avg Modal: Rs. 3025.84 | Peak: Rs. 4800.00 | Vol:  4551.49 T | Days: 58
+    - Mandi: APMC Kamthi                              (Nagpur) | Avg Modal: Rs. 2793.22 | Peak: Rs. 7000.00 | Vol:   282.70 T | Days: 164
+    - Mandi: APMC Dindori                             (Nashik) | Avg Modal: Rs. 2517.12 | Peak: Rs. 5600.00 | Vol:  8160.50 T | Days: 110
+
+  * Procedure 2: CALL sp_buyer_bulk_procurement_plan('Tomato', 100.00, 'Mumbai (Vashi Hub)')
+    - Mandi: APMC Kalyan                    (Thane) | Mandi Price: Rs.  950.00 | Landed Cost: Rs. 1052.98/Qtl | Feasibility: PARTIAL SUPPLY / TIGHT | Total INR: Rs. 1,052,980.00
+    - Mandi: APMC Khed                      (Pune) | Mandi Price: Rs.  800.00 | Landed Cost: Rs. 1192.65/Qtl | Feasibility: PARTIAL SUPPLY / TIGHT | Total INR: Rs. 1,192,650.00
+    - Mandi: APMC Nasik                     (Nashik) | Mandi Price: Rs.  950.00 | Landed Cost: Rs. 1372.48/Qtl | Feasibility: SUFFICIENT SUPPLY | Total INR: Rs. 1,372,480.00
+
+  * Procedure 3: CALL sp_buyer_arbitrage_radar('Onion', '2026-05-15', 400.00)
+    - Arbitrage: Buy APMC Barshi (Solapur) @ Rs.  450.00 -> Sell APMC Kamthi (Nagpur) @ Rs. 1770.00 | Margin: Rs. 1320.00/Qtl (293.33%)
+    - Arbitrage: Buy APMC Lasur Station (Chattrapati Sambhajinagar) @ Rs.  550.00 -> Sell APMC Kamthi (Nagpur) @ Rs. 1770.00 | Margin: Rs. 1220.00/Qtl (221.82%)
+    - Arbitrage: Buy APMC Paranda (Dharashiv) @ Rs.  550.00 -> Sell APMC Kamthi (Nagpur) @ Rs. 1770.00 | Margin: Rs. 1220.00/Qtl (221.82%)
+
+  * Procedure 4: CALL sp_check_user_alerts(1) [Farmer Ramesh Patil]
+    - User: Ramesh Patil (Farmer) | Crop: Onion | Target: Rs. 2500.00 (ABOVE) | Current: Rs. 2800.00 | Status: [TARGET BREACHED] | Msg: Target price reached: Onion crossed Rs. 2,500/Quintal
+
+  * Procedure 4: CALL sp_check_user_alerts(3) [Trader Vikram Joshi]
+    - User: Vikram Joshi (Trader) | Crop: Apple | Target: Rs. 8000.00 (BELOW) | Current: Rs. 10000.00 | Status: [MONITORING] | Msg: ALERT HIT on 2026-10-11: Modal Price reached Rs.7400.00
+
+[5] TRIGGERS REAL-TIME FIRED EVENT AUDIT
+--------------------------------------------------------------------------------
+  1. Pre-Trigger State (Alert #3): CommodityID=1, Target=Rs. 8000.00 (BELOW)
+     TriggeredMessage before event : 'ALERT HIT on 2026-10-11: Modal Price reached Rs.7400.00'
+  2. Event: Inserted Daily_Prices #40310 (Apple Variety #1, ModalPrice=Rs. 7100.00 <= Target 8000.00)
+  3. [Trigger 1 Fired] `trg_after_price_insert_alert` -> New Message: 'ALERT HIT on 2026-10-15: Modal Price reached Rs.7100.00'
+  4. [Trigger 2 Fired] `trg_buyer_auto_procurement_order` -> Auto-generated Order #2:
+     BuyerUserID: 3 | Qty: 25.00 T | Price: Rs. 7100.00 | Status: 'AUTO_GENERATED'
+  5. Cleanup: Test daily price row and auto-generated test order purged successfully.
+
+================================================================================
+STATUS: ALL ADVANCED SQL FEATURES VERIFIED WITH ZERO ERRORS
+================================================================================

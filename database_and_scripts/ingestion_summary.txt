@@ -1,0 +1,72 @@
+===========================================================================
+AGRIMARKET DATABASE INGESTION & NORMALIZATION SUMMARY REPORT
+===========================================================================
+Execution Timestamp : 2026-10-10 17:53:28
+Target Database     : AgriMarket
+Batch Execution Size: 3,000 rows per transaction
+Base Directory      : C:\Users\HP\Documents\sql_mandi
+Output Directory    : C:\Users\HP\Documents\sql_mandi\database_and_scripts
+---------------------------------------------------------------------------
+
+1. DISCOVERED CSV FILES & RAW ROW COUNTS
+---------------------------------------------------------------------------
+  - Fruits\Apple_arrival_price.csv                               :    2,034 raw lines
+  - Fruits\Banana_arrvial_price.csv                              :    1,197 raw lines
+  - Fruits\Mango_arrival_price.csv                               :    1,497 raw lines
+  - Vegetables\carrot\carrot_arrival_price.csv                   :    5,029 raw lines
+  - Vegetables\garlic\garlic_arrival_price.csv                   :    2,758 raw lines
+  - Vegetables\onions\onions_arriva_oldl.csv                     :   10,462 raw lines
+  - Vegetables\onions\onions_price_old.csv                       :   12,375 raw lines
+  - Vegetables\onions\onoins_price_arrival.csv                   :   14,485 raw lines
+  - Vegetables\potato\potato_arrival_price.csv                   :    5,414 raw lines
+  - Vegetables\Tomato\Tomato_price_arrival.csv                   :    7,917 raw lines
+  Total CSV files discovered: 10
+
+2. CSV VALIDATION & CLEANING METRICS
+---------------------------------------------------------------------------
+  Successfully Processed Files (Standard 14-Column Format):
+    * Apple_arrival_price.csv             | Input Rows:  2,031 | Cleaned Rows:  2,031
+    * Banana_arrvial_price.csv            | Input Rows:  1,194 | Cleaned Rows:  1,194
+    * Mango_arrival_price.csv             | Input Rows:  1,494 | Cleaned Rows:  1,494
+    * carrot_arrival_price.csv            | Input Rows:  5,026 | Cleaned Rows:  5,026
+    * garlic_arrival_price.csv            | Input Rows:  2,755 | Cleaned Rows:  2,755
+    * onoins_price_arrival.csv            | Input Rows: 14,482 | Cleaned Rows: 14,482
+    * potato_arrival_price.csv            | Input Rows:  5,411 | Cleaned Rows:  5,411
+    * Tomato_price_arrival.csv            | Input Rows:  7,914 | Cleaned Rows:  7,914
+
+  Skipped Files (Non-Standard Schemas):
+    * onions_arriva_oldl.csv              | Reason: Non-standard schema (Missing: ['Variety', 'Grade', 'Min Price', 'Max Price', 'Modal Price', 'Price Unit'], Extra: [])
+    * onions_price_old.csv                | Reason: Non-standard schema (Missing: ['Arrival Quantity', 'Arrival Unit', 'Arrival Date'], Extra: ['Price Date'])
+
+3. FINAL ROW COUNTS ACROSS ALL 11 MYSQL TABLES
+---------------------------------------------------------------------------
+  Table: State                | Total Rows:          1
+  Table: District             | Total Rows:         13
+  Table: Market               | Total Rows:         90
+  Table: Category             | Total Rows:          2
+  Table: Commodity            | Total Rows:          8
+  Table: Variety              | Total Rows:         24
+  Table: Daily_Prices         | Total Rows:     40,307
+  Table: System_User          | Total Rows:          4
+  Table: Farmer               | Total Rows:          2
+  Table: Trader               | Total Rows:          2
+  Table: Price_Alerts         | Total Rows:          3
+---------------------------------------------------------------------------
+  GRAND TOTAL ENTITIES ACROSS ALL TABLES:     40,456
+
+4. SAMPLE TEST SEED VERIFICATION
+---------------------------------------------------------------------------
+  System Users:
+    - ID 1: Ramesh Patil (Farmer), Phone: +919822011223, District: Pune
+    - ID 2: Suresh Shinde (Farmer), Phone: +919822022334, District: Nashik
+    - ID 3: Vikram Joshi (Trader), Phone: +919822033445, District: Pune
+    - ID 4: Anil Deshmukh (Trader), Phone: +919822044556, District: Ahilyanagar
+
+  Active Price Alerts:
+    - Alert #1: Ramesh Patil | Onion | Condition: ABOVE 2500.00 | Msg: Target price reached: Onion crossed Rs. 2,500/Quintal
+    - Alert #2: Suresh Shinde | Tomato | Condition: ABOVE 1800.00 | Msg: Target price reached: Tomato crossed Rs. 1,800/Quintal
+    - Alert #3: Vikram Joshi | Apple | Condition: BELOW 8000.00 | Msg: Buy alert: Apple modal price dropped below Rs. 8,000/Quintal
+
+===========================================================================
+Pipeline execution completed successfully with 100% relational integrity.
+===========================================================================
